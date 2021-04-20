@@ -83,12 +83,20 @@ RSpec.describe Customer, type: :model do
         invoice_6b.invoice_items.create!(item: item_7, quantity: 20, unit_price: 3)
 
         # no successful transactions
-        invoice_6c = @customer.invoice.create!
+        invoice_6c = @customer.invoices.create!
         invoice_6c.invoice_items.create!(item: item_6a, quantity: 1, unit_price: 1_000_000)
       end
 
       it 'returns the top 5' do
-        expect(@customer.top_merchant).to eq([@merchant_3, @merchant_7, @merchant_2, @merchant_6, @merchant_5])
+        actual = @customer.top_merchant.map do |merchant|
+          merchant.name
+        end
+
+        expected = [@merchant_3, @merchant_7, @merchant_2, @merchant_6, @merchant_5].map do |merchant|
+          merchant.name
+        end
+
+        expect(actual).to eq(expected)
       end
 
       it 'only includes successful transactions'
